@@ -1,10 +1,10 @@
 pipeline {
   agent {
     label 'cloud-docker-agent-1'
-    }
+  }
 
   triggers {
-    pollSCM('H/30 * * * *')
+    pollSCM('*/1 * * * *')   // every 1 minute (30s not supported, see note below)
   }
 
   stages {
@@ -39,4 +39,5 @@ pipeline {
       echo 'Pipeline failed ❌'
     }
   }
+}
 
