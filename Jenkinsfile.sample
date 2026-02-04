@@ -3,30 +3,37 @@ pipeline {
     label 'cloud-docker-agent-1'
   }
 
+  tools {
+    nodejs 'node20'
+  }
+
   triggers {
-    pollSCM('*/1 * * * *')   // every 1 minute (30s not supported, see note below)
+    pollSCM('*/1 * * * *')
   }
 
   stages {
     stage('Build') {
       steps {
-        echo 'Installing dependencies...'
-        sh 'npm install'
+        sh '''
+          node -v
+          npm -v
+          npm install
+        '''
       }
     }
 
     stage('Test') {
       steps {
-        echo 'Running tests...'
         sh 'npm test'
       }
     }
 
     stage('Deploy') {
       steps {
-        echo 'Deploying application...'
-        sh 'npm run build'
-        sh 'echo "Deploy step completed"'
+        sh '''
+          npm run build
+          echo "Deploy step completed"
+        '''
       }
     }
   }
