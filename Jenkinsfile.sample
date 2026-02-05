@@ -1,37 +1,51 @@
 pipeline {
   agent {
+<<<<<<< HEAD
     label 'ssh-agent'
   }
+=======
+    label 'cloud-docker-agent-1'
+  }
+
+>>>>>>> 13991ab (new files)
 
   triggers {
     pollSCM('*/1 * * * *')
   }
 
   stages {
+
     stage('Build') {
       steps {
-        sh '''
-          node -v
-          npm -v
-          npm install
-        '''
+        dir('app') {
+          sh '''
+            node -v
+            npm -v
+            npm install
+          '''
+        }
       }
     }
 
     stage('Test') {
       steps {
-        sh 'npm test'
+        dir('app') {
+          sh 'npm test'
+        }
       }
     }
 
     stage('Deploy') {
       steps {
-        sh '''
-          npm run build
-          echo "Deploy step completed"
-        '''
+        dir('app') {
+          sh '''
+            npm run build
+            echo "Deploy step completed"
+          '''
+        }
       }
     }
+
   }
 
   post {

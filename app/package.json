@@ -1,0 +1,17 @@
+{
+  "name": "jenkins-demo-app",
+  "version": "1.0.0",
+  "description": "Demo Node.js app for Jenkins pipeline",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Running tests...\" && exit 0",
+    "build": "echo \"Building application...\" && mkdir -p dist && echo \"Build done\" > dist/output.txt",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Sudar",
+  "license": "MIT"
+}
+
