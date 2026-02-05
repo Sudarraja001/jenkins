@@ -42,7 +42,7 @@ pipeline {
       steps {
         dir('node-microservice/app') {
           sh """
-            docker tag -t ${IMAGE_NAME}  ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} 
+            docker tag  ${IMAGE_NAME}  ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} 
           """
         }
       }
