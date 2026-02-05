@@ -1,13 +1,7 @@
 pipeline {
   agent {
-<<<<<<< HEAD
     label 'ssh-agent'
   }
-=======
-    label 'cloud-docker-agent-1'
-  }
-
->>>>>>> 13991ab (new files)
 
   triggers {
     pollSCM('*/1 * * * *')
@@ -57,4 +51,3 @@ pipeline {
     }
   }
 }
-
