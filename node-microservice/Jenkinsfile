@@ -9,12 +9,8 @@ pipeline {
     IMAGE_TAG = "${BUILD_NUMBER}"
   }
 
- tools { 
-  docker 'docker20' 
- }
 
   stages {
-
     stage('Checkout') {
       steps {
         checkout scm
