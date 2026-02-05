@@ -3,10 +3,6 @@ pipeline {
     label 'ssh-agent'
   }
 
-  tools {
-    nodejs 'node20'
-  }
-
   triggers {
     pollSCM('*/1 * * * *')
   }
