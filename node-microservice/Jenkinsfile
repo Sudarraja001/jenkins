@@ -9,6 +9,9 @@ pipeline {
     IMAGE_TAG = "${BUILD_NUMBER}"
   }
 
+  tools {
+   nodejs 'node20'
+  }
 
   stages {
     stage('Checkout') {
