@@ -22,7 +22,7 @@ pipeline {
 
     stage('Test') {
       steps {
-        dir('app') {
+        dir('node-microservice/app') {
           sh 'npm test'
         }
       }
@@ -30,7 +30,7 @@ pipeline {
 
     stage('Docker Build') {
       steps {
-        dir('app') {
+        dir('node-microservice/app') {
           sh """
             docker build -t ${IMAGE_NAME} .
           """
@@ -40,7 +40,7 @@ pipeline {
     
     stage('Docker Tag') {
       steps {
-        dir('app') {
+        dir('node-microservice/app') {
           sh """
             docker tag -t ${IMAGE_NAME}  ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} 
           """
