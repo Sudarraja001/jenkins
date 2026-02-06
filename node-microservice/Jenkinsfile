@@ -7,7 +7,7 @@ pipeline {
     REGISTRY = "buildserver:5000"
     IMAGE_NAME = "user-service"
     IMAGE_TAG = "${BUILD_NUMBER}"
-    SCANNER_HOME = tool 'sonar-scanner'
+    SCANNER_HOME = tool 'sonar'
   }
 
   tools {
