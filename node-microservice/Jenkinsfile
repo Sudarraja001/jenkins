@@ -10,10 +10,11 @@ pipeline {
   }
 
   tools {
-   nodejs 'node20'
+    nodejs 'node20'
   }
 
   stages {
+
     stage('Checkout') {
       steps {
         checkout scm
@@ -28,33 +29,43 @@ pipeline {
       }
     }
 
-    stage('Docker Build') {
+    stage('SonarQube Analysis') {
       steps {
         dir('node-microservice/app') {
-          sh """
-            docker build -t ${IMAGE_NAME} .
-          """
+          withSonarQubeEnv('sonar') {
+            sh '''
+              sonar-scanner \
+                -Dsonar.projectKey=user-service \
+                -Dsonar.projectName=user-service \
+                -Dsonar.sources=.
+            '''
+          }
         }
       }
     }
-    
+
+    stage('Docker Build') {
+      steps {
+        dir('node-microservice/app') {
+          sh "docker build -t ${IMAGE_NAME} ."
+        }
+      }
+    }
+
     stage('Docker Tag') {
       steps {
         dir('node-microservice/app') {
-          sh """
-            docker tag  ${IMAGE_NAME}  ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} 
-          """
+          sh "docker tag ${IMAGE_NAME} ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
         }
       }
     }
 
     stage('Push to Registry') {
       steps {
-        sh """
-          docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
-        """
+        sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
       }
     }
+
   }
 
   post {
@@ -66,4 +77,3 @@ pipeline {
     }
   }
 }
-
