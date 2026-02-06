@@ -13,6 +13,12 @@ pipeline {
     nodejs 'node20'
   }
 
+  environment { 
+    
+    SCANNER_HOME= tool 'sonar'
+    
+  }
+
   stages {
 
     stage('Checkout') {
@@ -34,7 +40,7 @@ pipeline {
         dir('node-microservice/app') {
           withSonarQubeEnv('sonar') {
             sh '''
-              sonar-scanner \
+              $SCANNER_HOME/bin/sonar-scanner \
                 -Dsonar.projectKey=user-service \
                 -Dsonar.projectName=user-service \
                 -Dsonar.sources=.
