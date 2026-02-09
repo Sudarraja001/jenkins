@@ -1,7 +1,5 @@
 pipeline {
-  agent {
-    label 'vm-agent'
-  }
+  agent any
 
   environment {
     REGISTRY = "buildserver:5000"
