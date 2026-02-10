@@ -1,12 +1,11 @@
 pipeline {
-  agent {
-    label 'vm-agent'
-  }
-
+  agent any
+  
+  
   environment {
-    REGISTRY = "buildserver:5000"
-    IMAGE_NAME = "user-service"
-    IMAGE_TAG = "${BUILD_NUMBER}"
+    REGISTRY     = "buildserver:5000"
+    IMAGE_NAME   = "user-service"
+    IMAGE_TAG    = "${BUILD_NUMBER}"
     SCANNER_HOME = tool 'sonar'
   }
 
@@ -45,6 +44,30 @@ pipeline {
       }
     }
 
+   
+    stage('Manual Approval') {
+      steps {
+        emailext(
+          subject: "Approval Needed: ${JOB_NAME} #${BUILD_NUMBER}",
+          body: """
+Hi Team,
+
+Build #${BUILD_NUMBER} is waiting for approval.
+
+Job Name : ${JOB_NAME}
+Build URL: ${BUILD_URL}
+
+Please login to Jenkins and approve the build to continue
+Docker build & push.
+""",
+          to: "sudarraja86291@gmail.com"
+        )
+
+        input message: "Approve to continue Docker build & push?",
+              ok: "Approve"
+      }
+    }
+
     stage('Docker Build') {
       steps {
         dir('node-microservice/app') {
@@ -55,9 +78,7 @@ pipeline {
 
     stage('Docker Tag') {
       steps {
-        dir('node-microservice/app') {
-          sh "docker tag ${IMAGE_NAME} ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
-        }
+        sh "docker tag ${IMAGE_NAME} ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
       }
     }
 
@@ -66,15 +87,60 @@ pipeline {
         sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
       }
     }
-
   }
 
+
   post {
+
     success {
-      echo "✅ Image pushed: ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+      emailext(
+        subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
+        body: """
+Build SUCCESSFUL ✅
+
+Job: ${JOB_NAME}
+Build Number: ${BUILD_NUMBER}
+
+Image pushed:
+${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+
+Build URL:
+${BUILD_URL}
+""",
+        to: "sudarraja86291@gmail.com"
+      )
     }
+
     failure {
-      echo "❌ Pipeline failed"
+      emailext(
+        subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+        body: """
+Build FAILED ❌
+
+Job: ${JOB_NAME}
+Build Number: ${BUILD_NUMBER}
+
+Check logs:
+${BUILD_URL}
+""",
+        to: "sudarraja86291@gmail.com"
+      )
+    }
+
+    aborted {
+      emailext(
+        subject: "ABORTED: ${JOB_NAME} #${BUILD_NUMBER}",
+        body: """
+Build ABORTED ⚠️
+
+Reason:
+Manual approval was rejected or build was stopped.
+
+Build URL:
+${BUILD_URL}
+""",
+        to: "sudarraja86291@gmail.com"
+      )
     }
   }
 }
