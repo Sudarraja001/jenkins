@@ -37,6 +37,15 @@ pipeline {
         }
       }
     }
+    
+    
+    stage('Quality Gate') {
+      steps {
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
 
    
     stage('Manual Approval') {
@@ -91,7 +100,7 @@ Docker build & push.
       emailext(
         subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
         body: """
-Build SUCCESSFUL ✅
+Build SUCCESSFUL..
 
 Job: ${JOB_NAME}
 Build Number: ${BUILD_NUMBER}
@@ -110,7 +119,7 @@ ${BUILD_URL}
       emailext(
         subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
         body: """
-Build FAILED ❌
+Build FAILED..
 
 Job: ${JOB_NAME}
 Build Number: ${BUILD_NUMBER}
@@ -126,7 +135,7 @@ ${BUILD_URL}
       emailext(
         subject: "ABORTED: ${JOB_NAME} #${BUILD_NUMBER}",
         body: """
-Build ABORTED ⚠️
+Build ABORTED..
 
 Reason:
 Manual approval was rejected or build was stopped.
