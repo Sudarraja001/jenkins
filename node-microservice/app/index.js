@@ -3,37 +3,50 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// 🔐 Hardcoded secret (Security Hotspot)
-const DB_PASSWORD = "superSecret123";
+// ✅ Use environment variable instead of hardcoded secret
+const DB_PASSWORD = process.env.DB_PASSWORD || '';
 
-// ❌ Unused variable (Code Smell)
-let tempData = "not used anywhere";
-
-// 🔁 Duplicate Function 1
-function calculateTotal(price, tax) {
-  const taxAmount = price * tax;
-  const total = price + taxAmount;
-  return total;
+/**
+ * ✅ Single reusable function (Removed duplication)
+ */
+function calculateAmount(price, taxRate) {
+  return price + (price * taxRate);
 }
 
-// 🔁 Duplicate Function 2 (Same Logic – Duplication)
-function calculateFinalAmount(price, tax) {
-  const taxAmount = price * tax;
-  const total = price + taxAmount;
-  return total;
+/**
+ * ✅ Input validation middleware
+ */
+function validateNumbers(price, tax) {
+  if (Number.isNaN(price) || Number.isNaN(tax)) {
+    return false;
+  }
+  if (price < 0 || tax < 0) {
+    return false;
+  }
+  return true;
 }
 
-// ❌ No input validation (Bad practice)
 app.get('/calculate', (req, res) => {
-  const price = parseFloat(req.query.price);
-  const tax = parseFloat(req.query.tax);
+  const price = Number.parseFloat(req.query.price);
+  const tax = Number.parseFloat(req.query.tax);
 
-  const result = calculateTotal(price, tax);
+  // ✅ Proper validation
+  if (!validateNumbers(price, tax)) {
+    return res.status(400).json({
+      error: 'Invalid price or tax value. Must be positive numbers.'
+    });
+  }
+
+  const result = calculateAmount(price, tax);
+
   res.json({ total: result });
 });
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'UP', service: 'user-service' });
+  res.json({
+    status: 'UP',
+    service: 'user-service'
+  });
 });
 
 app.listen(PORT, () => {
