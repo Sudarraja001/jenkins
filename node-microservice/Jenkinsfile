@@ -18,7 +18,7 @@ pipeline {
     stage('Test') {
       steps {
         dir('node-microservice/app') {
-          sh 'npm test'
+          sh 'npm test -- --coverage'
         }
       }
     }
@@ -31,7 +31,8 @@ pipeline {
               $SCANNER_HOME/bin/sonar-scanner \
                 -Dsonar.projectKey=user-service \
                 -Dsonar.projectName=user-service \
-                -Dsonar.sources=.
+                -Dsonar.sources=. \
+                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             '''
           }
         }
