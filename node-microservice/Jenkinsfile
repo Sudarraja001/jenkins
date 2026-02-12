@@ -15,6 +15,14 @@ pipeline {
 
   stages {
 
+    stage('Install Dependencies') {
+    steps {
+      dir('node-microservice/app') {
+        sh 'npm install'
+      }
+    }
+  }
+
     stage('Test') {
       steps {
         dir('node-microservice/app') {
