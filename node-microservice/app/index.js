@@ -49,6 +49,4 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 User service running on port ${PORT}`);
-});
+module.exports = app;
