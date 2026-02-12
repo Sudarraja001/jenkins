@@ -39,7 +39,7 @@ pipeline {
               $SCANNER_HOME/bin/sonar-scanner \
                 -Dsonar.projectKey=user-service \
                 -Dsonar.projectName=user-service \
-                -Dsonar.sources=. \
+                -Dsonar.sources=index.js \
                 -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             '''
           }
