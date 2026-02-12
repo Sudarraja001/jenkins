@@ -76,7 +76,7 @@ Docker build & push.
         )
 
         input message: "Approve to continue Docker build & push?",
-              submitter: "sudarponraja,Sudar,admin",
+              submitter: "Sudar,admin",
               ok: "Approve"
       }
     }
